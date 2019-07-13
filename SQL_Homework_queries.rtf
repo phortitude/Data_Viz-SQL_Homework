@@ -1,0 +1,114 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1671\cocoasubrtf100
+{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;}
+{\*\expandedcolortbl;;}
+\margl1440\margr1440\vieww10800\viewh8400\viewkind0
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0\fs24 \cf0 -- 1. List the following details of each employee: employee number, last name, first name, gender, and salary.\
+\
+SELECT employees.emp_no,\
+	employees.first_name,\
+	employees.last_name,\
+	employees.gender,\
+   salaries.salary\
+FROM employees\
+JOIN salaries\
+  ON employees.emp_no = salaries.emp_no;\
+  \
+-- 2. List employees who were hired in 1986.\
+\
+SELECT first_name,\
+	last_name\
+FROM employees\
+WHERE EXTRACT(year FROM "hire_date") = 1986;\
+\
+-- 3. List the manager of each department with the following information: \
+-- department number, department name, the manager's employee number, last name, first name, and start and end employment dates.\
+	\
+WITH previous_results AS (\
+	SELECT dept_manager.dept_no,\
+	dept_manager.emp_no,\
+	dept_manager.from_date,\
+	dept_manager.to_date,\
+	employees.first_name,\
+	employees.last_name\
+FROM dept_manager\
+JOIN employees\
+	ON dept_manager.emp_no = employees.emp_no\
+)\
+SELECT *\
+FROM previous_results\
+JOIN departments\
+  ON previous_results.dept_no = departments.dept_no;\
+  \
+-- 4. List the department of each employee with the following information: \
+-- employee number, last name, first name, and department name.\
+\
+WITH previous_results AS (\
+	SELECT employees.emp_no,\
+	employees.first_name,\
+	employees.last_name,\
+	dept_emp.dept_no\
+FROM employees\
+JOIN dept_emp\
+	ON employees.emp_no = dept_emp.emp_no\
+)\
+SELECT *\
+FROM previous_results\
+JOIN departments\
+  ON previous_results.dept_no = departments.dept_no;\
+  \
+-- 5. List all employees whose first name is "Hercules" and last names begin with "B."\
+SELECT first_name\
+FROM employees\
+WHERE first_name LIKE '%Hercules%';\
+\
+-- 6. List all employees in the Sales department, including their \
+-- employee number, last name, first name, and department name.\
+\
+\
+SELECT employees.emp_no,\
+	employees.first_name,\
+	employees.last_name,\
+-- 	dept_emp.dept_no,\
+-- 	dept_emp.emp_no\
+	departments.dept_name\
+FROM employees\
+JOIN dept_emp\
+	ON employees.emp_no = dept_emp.emp_no\
+JOIN departments\
+	ON dept_emp.dept_no = departments.dept_no\
+WHERE dept_name LIKE '%Sales%'\
+\
+--create a view for the above table\
+\
+\
+--SELECT *\
+--FROM previous_results\
+--JOIN departments\
+--  ON previous_results.dept_no = departments.dept_no;\
+\
+SELECT *\
+FROM public."Q6";\
+\
+-- 7. List all employees in the Sales and Development departments, \
+--including their employee number, last name, first name, and department name.\
+\
+SELECT employees.emp_no,\
+	employees.last_name,\
+	employees.first_name,\
+	departments.dept_name\
+FROM employees\
+JOIN dept_emp\
+	ON employees.emp_no = dept_emp.emp_no\
+JOIN departments\
+	ON dept_emp.dept_no = departments.dept_no\
+WHERE dept_name LIKE '%Sales%' OR dept_name LIKE '%Development'\
+\
+-- 8. In descending order, list the frequency count of employee last names, i.e., how many employees share each last name.\
+\
+select last_name, count(*)\
+from employees\
+group by last_name\
+HAVING count(*) > 1}
